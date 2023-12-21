@@ -1,5 +1,21 @@
-function App() {
-  return <h1 className="text-3xl font-bold underline">Hello world!</h1>;
-}
+import { Route, BrowserRouter, Routes } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import { Home, About, Project, Contact } from "./pages";
+
+const App = () => {
+  return (
+    <main className="bg-slate-300/20">
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/project" element={<Project />} />
+          <Route path="/contact" element={<Contact />} />
+        </Routes>
+      </BrowserRouter>
+    </main>
+  );
+};
 
 export default App;
