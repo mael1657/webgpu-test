@@ -6,22 +6,15 @@ Source: https://sketchfab.com/3d-models/foxs-islands-163b68e09fcc47618450150be77
 Title: Fox's islands
 */
 
-import { useRef, useEffect, useCallback, SyntheticEvent } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import { useGLTF } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { a } from "@react-spring/three";
 
 import islandScene from "../assets/3d/island.glb?url";
-import { Mesh } from "three";
 
-const Island = ({
-  isRotating,
-  setIsRotating,
-  setCurrentStage,
-  ...props
-}: // eslint-disable-next-line @typescript-eslint/no-explicit-any
-any) => {
-  const islandRef = useRef<Mesh>();
+const Island = ({ isRotating, setIsRotating, setCurrentStage, ...props }) => {
+  const islandRef = useRef();
 
   const { gl, viewport } = useThree();
   const { nodes, materials } = useGLTF(islandScene);
@@ -31,17 +24,12 @@ any) => {
   const dampingFactor = 0.95;
 
   const handlePointerDown = useCallback(
-    (e: SyntheticEvent) => {
+    (e) => {
       e.stopPropagation();
       e.preventDefault();
       setIsRotating(true);
 
-      const clientX =
-        e instanceof TouchEvent
-          ? e.touches[0].clientX
-          : e instanceof MouseEvent
-          ? e.clientX
-          : 0;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
 
       lastX.current = clientX;
     },
@@ -49,7 +37,7 @@ any) => {
   );
 
   const handlePointerUp = useCallback(
-    (e: SyntheticEvent) => {
+    (e) => {
       e.stopPropagation();
       e.preventDefault();
       setIsRotating(false);
@@ -58,21 +46,16 @@ any) => {
   );
 
   const handlePointerMove = useCallback(
-    (e: SyntheticEvent) => {
+    (e) => {
       e.stopPropagation();
       e.preventDefault();
 
       if (isRotating) {
-        const clientX =
-          e instanceof TouchEvent
-            ? e.touches[0].clientX
-            : e instanceof MouseEvent
-            ? e.clientX
-            : 0;
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
 
         const delta = (clientX - lastX.current) / viewport.width;
 
-        islandRef.current!.rotation.y += delta * 0.01 * Math.PI;
+        islandRef.current.rotation.y += delta * 0.01 * Math.PI;
         lastX.current = clientX;
         rotationSpeed.current = delta * 0.01 * Math.PI;
       }
@@ -81,19 +64,19 @@ any) => {
   );
 
   const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
+    (e) => {
       if (e.key === "ArrowLeft") {
         if (!isRotating) setIsRotating(true);
-        islandRef.current!.rotation.y += 0.01 * Math.PI;
+        islandRef.current.rotation.y += 0.01 * Math.PI;
       } else if (e.key === "ArrowRight") {
-        islandRef.current!.rotation.y -= 0.01 * Math.PI;
+        islandRef.current.rotation.y -= 0.01 * Math.PI;
       }
     },
     [isRotating, setIsRotating]
   );
 
   const handleKeyUp = useCallback(
-    (e: KeyboardEvent) => {
+    (e) => {
       if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
         setIsRotating(false);
       }
@@ -109,12 +92,12 @@ any) => {
         rotationSpeed.current = 0;
       }
 
-      islandRef.current!.rotation.y += rotationSpeed.current;
+      islandRef.current.rotation.y += rotationSpeed.current;
     } else {
       const rotation = islandRef.current?.rotation.y;
 
       const normalizedRotation =
-        ((rotation! % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+        ((rotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
 
       // Set the current stage based on the island's orientation
       switch (true) {

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAnimations, useGLTF } from "@react-three/drei";
 import birdScene from "../assets/3d/bird.glb?url";
 import { useEffect, useRef } from "react";
@@ -6,7 +5,7 @@ import { useFrame } from "@react-three/fiber";
 
 const Bird = () => {
   const { scene, animations } = useGLTF(birdScene);
-  const birdRef = useRef<any>();
+  const birdRef = useRef();
   const { actions } = useAnimations(animations, birdRef);
 
   useEffect(() => {
